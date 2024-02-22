@@ -8,8 +8,8 @@
 //ezButton limitSwitchpashe1(7);
 
 
-
-int delay_feeder = 270;
+int delay_after_step = 150;
+int delay_feeder = 180;
 bool status_servo = true;
 //int pwmA = 10;
 //int pwmB = 11;
@@ -49,6 +49,48 @@ int max_pos = 90;
 
 int start = 1;
 int pashe = 0;
+
+void setup_feeder() {
+  relay_1_on();
+  while (true) {
+
+    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
+      //      delay(100);
+      //      relay_1_off();
+      //      pashe = 15;
+      break;
+    }
+  }
+  delay(100);
+  while (true) {
+
+    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 0 ) {
+      delay(delay_feeder);
+      relay_1_off();
+      pashe = 15;
+      break;
+    }
+  }
+  delay(100);
+
+
+  while (true) {
+
+    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 0 ) {
+      relay_1_on();
+      delay(22);
+      relay_1_off();
+      delay(150);
+
+    } else {
+      relay_1_on();
+      delay(10);
+      relay_1_off();
+      break;
+    }
+  }
+
+}
 
 void testing_sensor_feeder() {
   relay_1_on();
@@ -149,52 +191,15 @@ void setup_steper()
     delay(50);
   }
   //
+  Serial.println("start setup feeder 1");
   delay(150);
 
-  if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
-    //    delay(500);
-    relay_1_off();
-    //    pashe = 15;
-  }
-
-  while (true) {
-    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
-      relay_1_on();
-    } else {
-      if (p2_status == 0) {
-        delay(delay_feeder);
-        p2_status = 1;
-      }
-      relay_1_off();
-      break;
-      //    Serial.println("object not Detect");
-    }
-  }
-
-
-  //
-  //    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1) {
-  //      //    digitalWrite(relay1, LOW);
-  //      relay_1_on();
-  //      Serial.println("setup IR start");
-  //
-  //
-  //
-  //      while (true) {
-  //        if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 0) {
-  //          relay_1_off();
-  //          break;
-  //        }
-  //
-  //
-  //      }
-  //
-  //
-  //}
+  setup_feeder();
+  
   delay(150);
   relay_2_on();
   Serial.println("Setup relay 2");
-  delay(1000);
+  delay(2000);
   relay_2_off();
 
 }
@@ -239,7 +244,7 @@ void setup() {
 
   myservo.write(0);
   myStepper.setSpeed(60);
-  setup_steper();
+//  setup_steper();
 
 
   pashe = 0;
@@ -248,28 +253,40 @@ void setup() {
 
 void loop() {
 
-  switch (pashe) {
-    case 0:
-      pashe0();
-      break;
-    case 1:
-      pashe1();
-      break;
-    case 15:
-      pashe1_5();
-      break;
 
-    case 2:
-      pashe2();
-      break;
+//  setup_feeder();
 
-    case 3:
-      pashe3();
-      break;
-    case 4:
-      pashe4();
-      break;
-  }
+//  delay(1000);
+  //  Serial.println(digitalRead(IR_DETECTOR_PIN_FEEDER));
+
+
+  myStepper.step(stepsPerRevolution);
+  delay(2500);
+  myStepper.step(-stepsPerRevolution);
+  delay(2500);
+
+//    switch (pashe) {
+//      case 0:
+//        pashe0();
+//        break;
+//      case 1:
+//        pashe1();
+//        break;
+//      case 15:
+//        pashe1_5();
+//        break;
+//  
+//      case 2:
+//        pashe2();
+//        break;
+//  
+//      case 3:
+//        pashe3();
+//        break;
+//      case 4:
+//        pashe4();
+//        break;
+//    }
 
 
   //  testing_sensor_feeder();
@@ -329,54 +346,81 @@ void pashe0() {
   myservo.write(0);
   pashe = 1;
   p2_status = 0;
-  delay(100);
+  delay(200);
 }
 void pashe1() {
 
-
-  relay_1_on();
-
-
-
-  //  delay(700);
-  //  digitalWrite(relay1, HIGH);
-  //  pashe = 2;
-
-  while (true) {
-    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
-      //    delay(500);
-      relay_1_off();
-      pashe = 15;
-      break;
-    }
-  }
-
-
-
-
-  //  if (limitSwitchpashe1.isPressed()) {
-  //    //    Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
-  //    Serial.println("pase 1 done move to pase 2");
-  //    digitalWrite(relay1, HIGH);
-  //    pashe = 2;
-  //  }
+  setup_feeder();
+  pashe = 2;
+//  relay_1_on();
+//
+//
+//
+//  //  delay(700);
+//  //  digitalWrite(relay1, HIGH);
+//  //  pashe = 2;
+//
+//  while (true) {
+//
+//    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
+//      //      delay(100);
+//      //      relay_1_off();
+//      //      pashe = 15;
+//      break;
+//    }
+//  }
+//  delay(100);
+//  //    relay_1_on();
+//  while (true) {
+//
+//    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 0 ) {
+//      delay(delay_feeder);
+//      relay_1_off();
+//      pashe = 2;
+//      break;
+//    }
+//  }
+//
+//  //
+//  // relay_1_on();
+//  //  while (true) {
+//  //
+//  //    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 0 ) {
+//  ////      delay(270);
+//  //      relay_1_off();
+//  //      pashe = 15;
+//  //      break;
+//  //    }
+//  //  }
+//
+//
+//
+//
+//  //  if (limitSwitchpashe1.isPressed()) {
+//  //    //    Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+//  //    Serial.println("pase 1 done move to pase 2");
+//  //    digitalWrite(relay1, HIGH);
+//  //    pashe = 2;
+//  //  }
 }
 
 void pashe1_5() {
-  while (true) {
-    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
-      relay_1_on();
-    } else {
-      if (p2_status == 0) {
-        delay(delay_feeder);
-        p2_status = 1;
-      }
-      relay_1_off();
-      break;
-      //    Serial.println("object not Detect");
-    }
-  }
-  pashe = 2;
+  //  while (true) {
+  //    if (digitalRead(IR_DETECTOR_PIN_FEEDER ) == 1 ) {
+  //      relay_1_on();
+  //    } else {
+  //      if (p2_status == 0) {
+  //        delay(delay_feeder);
+  //        p2_status = 1;
+  //      }
+  //      relay_1_off();
+  //      break;
+  //      //    Serial.println("object not Detect");
+  //    }
+  //  }
+  delay(3000);
+  pashe = 1;
+
 
 }
 void pashe2() {
@@ -417,9 +461,9 @@ void pashe2() {
         Serial.println(pashe2_counter_0);
         if (pashe2_counter_0 == 200) {
 
-          relay_1_on();
-          delay(20);
-          relay_1_off();
+//          relay_1_on();
+//          delay(20);
+//          relay_1_off();
           pashe2_counter_0_status = false;
           Serial.println(String(pashe2_counter_0_status));
           break;
@@ -503,13 +547,15 @@ void pashe4() {
     relay_2_off();
   } else {
     relay_2_on();
-    while (true) {
-      if (digitalRead(IR_DETECTOR_PIN ) == 0 ) {
-        delay(150);
-        relay_2_off();
-        break;
-      }
-    }
+    delay(600);
+    relay_2_off();
+    //    while (true) {
+    //      if (digitalRead(IR_DETECTOR_PIN ) == 0 ) {
+    //        delay(150);
+    //        relay_2_off();
+    //        break;
+    //      }
+    //    }
 
 
 
